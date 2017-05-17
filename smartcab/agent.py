@@ -52,11 +52,11 @@ class LearningAgent(Agent):
         inputs = self.env.sense(self)           # Visual input - intersection light and traffic
         deadline = self.env.get_deadline(self)  # Remaining deadline
 
-        ########### 
-        ## TO DO ##
-        ###########
         # Set 'state' as a tuple of relevant data for the agent        
-        state = None
+        # The state will contain the following features: ('waypoint', 'light', 'car_left_going_forward', 'car_across_going_forward_or_right')
+        car_left_going_forward = inputs['left'] == 'forward'
+        car_across_going_forward_or_right = inputs['oncoming'] == 'forward' or inputs['oncoming'] == 'right'
+        state = (waypoint, inputs['light'], car_left_going_forward, car_across_going_forward_or_right)
 
         return state
 
@@ -107,7 +107,7 @@ class LearningAgent(Agent):
             pass
         else:
             action = random.choice(self.valid_actions)
- 
+
         return action
 
 
@@ -172,14 +172,14 @@ def run():
     #   display      - set to False to disable the GUI if PyGame is enabled
     #   log_metrics  - set to True to log trial and simulation results to /logs
     #   optimized    - set to True to change the default log file name
-    sim = Simulator(env, update_delay=0.01, log_metrics=True)
+    sim = Simulator(env)
     
     ##############
     # Run the simulator
     # Flags:
     #   tolerance  - epsilon tolerance before beginning testing, default is 0.05 
     #   n_test     - discrete number of testing trials to perform, default is 0
-    sim.run(n_test=10)
+    sim.run()
 
 
 if __name__ == '__main__':

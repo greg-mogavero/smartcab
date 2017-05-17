@@ -102,9 +102,13 @@ class LearningAgent(Agent):
                 action = random.choice(self.valid_actions)
             else:
                 max_Q = self.get_maxQ(state)
+                candidates = []
                 for (a, v) in self.Q[state].items():
-                    if abs(max_Q - v) < 0.0001:
-                        action = a
+                    if max_Q == v:
+                        candidates.append(a)
+                if len(candidates) == 0:
+                    raise RuntimeError("Can't find max_Q action!")
+                action = random.choice(candidates)
         else:
             action = random.choice(self.valid_actions)
 
